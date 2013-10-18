@@ -29,7 +29,7 @@ https://help.github.com/articles/error-agent-admitted-failure-to-sign
 https://bugs.launchpad.net/ubuntu/+source/gnome-keyring/+bug/201786
 
 add your identity
-ssh-add github (id_rsa = default)
+ssh-add ~/.ssh/github-key-mac (id_rsa = default)
 # ssh session should now work
 # this MUST be done if your ssh id_rsa file is not named this
 
