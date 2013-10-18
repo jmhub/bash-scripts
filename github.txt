@@ -42,6 +42,8 @@ git clone ssh://git@github.com/jmhub/bash-scripts.git
 
 # Add a file
 git add filename
+or
+git add . (for all in directory?)
 git commit -m "message on commit here"
 
 # push changes
