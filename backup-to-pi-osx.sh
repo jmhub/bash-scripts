@@ -24,8 +24,8 @@ THISHOST=`hostname`
 #DEVICE2=/mnt/usb/key2
 SERVER=192.168.15.31
 REMOTEMOUNT=$SERVER:/mnt/usb/key1
-MOUNTPOINT=/mnt/nfs/pi-backup/
-SOURCE=/home/james/Documents
+MOUNTPOINT=/Volumes/pi-backup/
+SOURCE=/Users/james/Documents
 DESTINATION=$MOUNTPOINT/backup/$THISHOST
 LOGFILE=$SOURCE/`basename $0`.log
 PID=/tmp/`basename $0`.pid
@@ -41,7 +41,7 @@ echo "pid file $PID exists! Previous script run has not completed or completed a
 exit 1
 fi
 
-# check $MOUNTPOINT available
+# check $DESTINATION 
 if [ ! -d $MOUNTPOINT ] ; then
 	if ( mkdir $MOUNTPOINT ) ; then
 	echo "$MOUNTPOINT does not exist and unable to create"
