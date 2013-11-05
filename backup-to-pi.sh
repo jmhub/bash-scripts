@@ -24,7 +24,7 @@ THISHOST=`hostname`
 #DEVICE2=/mnt/usb/key2
 SERVER=192.168.15.31
 REMOTEMOUNT=$SERVER:/mnt/usb/key1
-MOUNTPOINT=/mnt/nfs/pi-backup/
+MOUNTPOINT=/mnt/nfs/pi-backup
 SOURCE=/home/james/Documents
 DESTINATION=$MOUNTPOINT/backup/$THISHOST
 LOGFILE=$SOURCE/`basename $0`.log
@@ -43,7 +43,7 @@ fi
 
 # check $MOUNTPOINT available
 if [ ! -d $MOUNTPOINT ] ; then
-	if ( ! mkdir $MOUNTPOINT ) ; then
+	if ! ( mkdir $MOUNTPOINT ) ; then
 	echo "$MOUNTPOINT does not exist and unable to create"
 	exit 4
 	fi
@@ -51,12 +51,12 @@ fi
 
 # test if mount exists and mount if not
 if ! mount | grep -q $MOUNTPOINT  ; then
-echo "Backup not currently mounted!" && echo "$MOUNTPOINT tested" 
+echo -e "Backup not currently mounted!\n" && echo -e "$MOUNTPOINT tested\n"
 	
 	# attempt mount	
-	# if !( mount $MOUNTPOINT ); then
+	if ! ( mount $MOUNTPOINT ); then
 	# OS X mount command
-	if ! ( mount -t nfs -o rw,bg,soft,intr,noac,tcp $REMOTEMOUNT $MOUNTPOINT ); then
+	# if ! ( mount -t nfs4 -o rw,bg,soft,intr,tcp $REMOTEMOUNT $MOUNTPOINT ); then
 	echo "mount of $MOUNTPOINT failed"
 	exit 2
 	fi
