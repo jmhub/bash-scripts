@@ -24,7 +24,7 @@ THISHOST=`hostname`
 #DEVICE2=/mnt/usb/key2
 SERVER=192.168.15.31
 REMOTEMOUNT=$SERVER:/mnt/usb/key1
-MOUNTPOINT=/Volumes/pi-backup/
+MOUNTPOINT=/Volumes/pi-backup
 SOURCE=/Users/james/Documents
 DESTINATION=$MOUNTPOINT/backup/$THISHOST
 LOGFILE=$SOURCE/`basename $0`.log
@@ -43,7 +43,7 @@ fi
 
 # check $DESTINATION 
 if [ ! -d $MOUNTPOINT ] ; then
-	if ( mkdir $MOUNTPOINT ) ; then
+	if ( ! mkdir $MOUNTPOINT ) ; then
 	echo "$MOUNTPOINT does not exist and unable to create"
 	exit 4
 	fi
@@ -66,9 +66,12 @@ fi
 # create pid file and rsync
 if (touch $PID ) ; then
 echo "creating pid file $PID. Beginning rsync... "
+# --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
+# could also compare with -- checksum or --size-only. Use --archive if you want permissions and links
+rsync --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --exclude-from $EXCLUDE --log-file=$LOGFILE $SOURCE $DESTINATION
+
 # flush all disk buffers
 sync
-rsync --archive --no-perms --no-group  --human-readable --itemize-changes --exclude-from $EXCLUDE --log-file=$LOGFILE $SOURCE $DESTINATION
 rm $PID
 echo `date`
 exit 0
