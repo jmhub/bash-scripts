@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# rsync copies /opt/script directory to /home/james/github
+# variables
+backupSource=/opt/scripts
+backupDest=/home/james/github/bash-scripts
+log=$backupSource/logs/`basename $0`
+
+#if [ -d $backupSource -a -d $backupDest ] ; then 
+
+rsync --update --itemize-changes --perms --progress --human-readable --log-file=$log $backupSource/* $backupDest
+
+
+
+
+
+
+
+
+
+
+

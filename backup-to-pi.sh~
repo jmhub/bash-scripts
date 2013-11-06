@@ -51,7 +51,7 @@ fi
 
 # test if mount exists and mount if not
 if ! mount | grep -q $MOUNTPOINT  ; then
-echo -e "Backup not currently mounted!\n" && echo -e "$MOUNTPOINT tested\n"
+echo -e "Backup not currently mounted!" && echo -e "$MOUNTPOINT tested\n"
 	
 	# attempt mount	
 	if ! ( mount $MOUNTPOINT ); then
