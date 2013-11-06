@@ -56,7 +56,7 @@ echo "Backup not currently mounted!" && echo "$MOUNTPOINT tested"
 	# attempt mount	
 	# if !( mount $MOUNTPOINT ); then
 	# OS X mount command
-	if ! ( mount -t nfs -o rw,bg,soft,intr,noac,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp  $REMOTEMOUNT $MOUNTPOINT ); then
+	if ! ( mount -t nfs -o rw,bg,soft,intr,noac,rsize=8192,wsize=8192,timeo=1800,retrans=5,proto=tcp  $REMOTEMOUNT $MOUNTPOINT ); then
 	echo "mount of $MOUNTPOINT failed"
 	exit 2
 	fi
