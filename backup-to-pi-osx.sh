@@ -56,7 +56,7 @@ echo "Backup not currently mounted!" && echo "$MOUNTPOINT tested"
 	# attempt mount	
 	# if !( mount $MOUNTPOINT ); then
 	# OS X mount command
-	if ! ( mount -t nfs -o rw,bg,soft,intr,noac,tcp $REMOTEMOUNT $MOUNTPOINT ); then
+	if ! ( mount -t nfs -o rw,bg,soft,intr,noac,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp  $REMOTEMOUNT $MOUNTPOINT ); then
 	echo "mount of $MOUNTPOINT failed"
 	exit 2
 	fi
@@ -67,8 +67,8 @@ fi
 if (touch $PID ) ; then
 echo "creating pid file $PID. Beginning rsync... "
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
-# could also compare with -- checksum or --size-only. Use --archive if you want permissions and links
-rsync --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --exclude-from $EXCLUDE --log-file=$LOGFILE $SOURCE $DESTINATION
+# could also compare with -- checksum or --size-only. Use --archive if you want permissions and links. --whole-file = no delta. stops network traffick
+rsync --whole-file --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --exclude-from $EXCLUDE --log-file=$LOGFILE $SOURCE $DESTINATION
 
 # flush all disk buffers
 sync
