@@ -37,11 +37,11 @@ CONNECTSTRING=""
 
 # echo $PID
 
-echo "Backup script run at " `date`
+echo "Backup script run by $USER " `date` > $LOGFILE
 
 # check pid file does not exist (normal file test not dir or block)
 if [ -f $PID ] ; then 
-echo "pid file $PID exists! Previous script run has not completed or completed abnormally."
+echo "pid file $PID exists! Previous script run has not completed or completed abnormally." >> $LOGFILE
 exit 1
 fi
 
@@ -53,13 +53,14 @@ fi
 
 # create pid file and rsync
 if (touch $PID ) ; then
-echo "creating pid file $PID. Beginning rsync... "
+echo "creating pid file $PID" >> $LOGFILE
+echo "Beginning rsync..." >> $LOGFILE
 else
-echo "Could not create $PID"
+echo "Could not create $PID" >> $LOGFILE
 exit 3
 fi
 
-if (ping -c 2 -W 1000 $SERVER >/dev/null) ; then
+if (/sbin/ping -c 2 -W 1000 $SERVER > /dev/null) ; then
 # flush all disk buffers
 sync
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
@@ -69,13 +70,14 @@ rsync --whole-file --archive --no-perms --no-group --human-readable --itemize-ch
 # flush all disk buffers
 sync
 rm $PID
-echo `date`
+echo "Backup script completed at " `date` >> $LOGFILE
 exit 0
 else
-echo "$SERVER offline"
+echo "$SERVER offline" >> $LOGFILE
+rm $PID
 exit 2
 fi
 
-echo "Unknown error"
+echo "Unknown error. Check exit code" >> $LOGFILE
 exit 5
 
