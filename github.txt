@@ -1,0 +1,67 @@
+# Cloning an existing repository with github
+
+# make dir where you want to clone to locally
+mkdir ~/scripts
+
+# setup local git
+yum -y install git
+
+# local variables
+git config --global user.name "James Moorhouse"
+git config --global user.email "james.moorhouse@gmail.com"
+
+
+# create a ssh-key pair - password is optional
+ssh-keygen -t rsa -C "james.moorhouse@gmail.com" -f ~/ssh/github
+
+# add the key to your clipboard (you may need to install xclip)
+xclip -selection c | clipboard < github.pub
+
+# copy this to your keys in github account
+Account settings
+ssh keys
+
+# test keys
+ssh -vT git@github.com (only use user git! -v = verbose -T = disable TTY allocation)
+if this fails with: "Agent admitted failure to sign using the key."
+see:
+https://help.github.com/articles/error-agent-admitted-failure-to-sign
+https://bugs.launchpad.net/ubuntu/+source/gnome-keyring/+bug/201786
+
+add your identity
+ssh-add ~/.ssh/github-key-mac (id_rsa = default)
+# ssh session should now work
+# this MUST be done if your ssh id_rsa file is not named this
+
+# List your keys in your session
+ssh-add -l (or ssh-add -L for FULL key) 
+
+ 
+# clone repository
+git clone ssh://git@github.com/jmhub/bash-scripts.git
+
+# Add a file
+git add filename
+or
+git add . (for all in directory?)
+git commit -m "message on commit here"
+
+# push changes
+# if you have cloned already.. (change 'master' to branch)
+git push origin master
+
+# if you haven't cloned
+# choose remote add origin <server>
+
+# replacing local changes
+git checkout -- FILENAME
+
+# drop all changes from master
+git fetch origin
+git reset --hard origin master
+
+
+
+
+
+
