@@ -60,7 +60,7 @@ echo "Could not create $PID" >> $LOGFILE
 exit 3
 fi
 
-if (/sbin/ping -c 2 -W 1000 $SERVER > /dev/null) ; then
+if (/sbin/ping -c 2 -W 2000 $SERVER > /dev/null) ; then
 # flush all disk buffers
 sync
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
