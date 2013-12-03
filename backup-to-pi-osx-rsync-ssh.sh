@@ -54,11 +54,12 @@ fi
 # create pid file and rsync
 if (touch $PID ) ; then
 echo "creating pid file $PID. Beginning rsync... "
+else
 echo "Could not create $PID"
 exit 3
 fi
 
-if (ping -c 2 -W 1000 $SERVER) ; then
+if (ping -c 2 -W 1000 $SERVER >/dev/null) ; then
 # flush all disk buffers
 sync
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
@@ -73,6 +74,7 @@ exit 0
 else
 echo "$SERVER offline"
 exit 2
+fi
 
 echo "Unknown error"
 exit 5
