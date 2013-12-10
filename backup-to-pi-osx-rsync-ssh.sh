@@ -36,8 +36,8 @@ EXCLUDE=$SOURCE/documents-rsync-exclude.txt
 CONNECTSTRING=""
 
 # echo $PID
-
-echo "Backup script run by $USER " `date` > $LOGFILE
+echo "####" >> $LOGFILE
+echo "Backup script run by $USER " `date` >> $LOGFILE
 
 # check pid file does not exist (normal file test not dir or block)
 if [ -f $PID ] ; then 
@@ -54,7 +54,6 @@ fi
 # create pid file and rsync
 if (touch $PID ) ; then
 echo "creating pid file $PID" >> $LOGFILE
-echo "Beginning rsync..." >> $LOGFILE
 else
 echo "Could not create $PID" >> $LOGFILE
 exit 3
@@ -63,6 +62,7 @@ fi
 if (/sbin/ping -c 2 -W 2000 $SERVER > /dev/null) ; then
 # flush all disk buffers
 sync
+echo "Beginning rsync..." >> $LOGFILE
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
 # could also compare with -- checksum or --size-only. Use --archive if you want permissions and links. --whole-file = no delta. stops network traffick
 rsync --whole-file --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --exclude-from $EXCLUDE --log-file=$LOGFILE --rsh="ssh -p 22231 -l james" $SOURCE $DESTINATION
