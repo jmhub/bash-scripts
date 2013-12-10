@@ -63,6 +63,7 @@ fi
 if (/bin/ping -c 2 -W 2000 $SERVER > /dev/null) ; then
 # flush all disk buffers
 sync
+echo "$SERVER online" >> $LOGFILE
 echo "Beginning rsync..." >> $LOGFILE
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
 # could also compare with -- checksum or --size-only. Use --archive if you want permissions and links. --whole-file = no delta. stops network traffick
