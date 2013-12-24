@@ -15,18 +15,17 @@
 # exit 3 = unknown error
 # exit 0 = successful exit
 
-DEVICE1=/mnt/usb/key1
-DEVICE2=/mnt/usb/key2
 SOURCE=$DEVICE1/backup
 DESTINATION=$DEVICE2/backup-mirror
-LOGFILE=$DEVICE1/`basename $0`.log
-PID=/tmp/`basename $0`.pid
+LOGFILE=$SOURCE/$0.log
+DEVICE1=/mnt/usb/key1
+DEVICE2=/mnt/usb/key2
 
 echo `date`
 
 # check pid file does not exist (normal file test not dir or block)
-if [ -f $PID ] ; then 
-echo "pid file $PID exists! Previous script run has not completed or completed abnormally."
+if [ -f /tmp/$0.pid ] ; then 
+echo "pid file $0 exists! possible previous script run has not completed or completed abnormally"
 exit 1
 
 # test block device exists (in case of failure or disconnection)
@@ -36,12 +35,12 @@ exit 2
 
 # create pid file and mirror
 else
-echo "creating pid file $PID. Beginning rsync mirroring.. "
-touch $PID
+echo "creating pid file $0.pid. Beginning rsync mirroring.. "
+touch /tmp/$0.pid
 rsync --archive --delete --human-readable --log-file=$LOGFILE $SOURCE $DESTINATION
 # flush all disk buffers
 sync
-rm $PID
+rm /tmp/$0.pid
 echo `date`
 
 exit 0
