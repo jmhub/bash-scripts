@@ -12,39 +12,48 @@
 
 # exit 1 = pid file exists (previous mirror still running?)
 # exit 2 = devices not mounted
-# exit 3 = unknown error
+# exit 3 = unable to write pid file
+# exit 4 = unknown error
 # exit 0 = successful exit
 
 DEVICE1=/mnt/usb/key1
 DEVICE2=/mnt/usb/key2
-SOURCE=$DEVICE1/backup
+# only copy contents of below directory
+SOURCE=$DEVICE1/backup/
 DESTINATION=$DEVICE2/backup-mirror
 LOGFILE=$DEVICE1/`basename $0`.log
 PID=/tmp/`basename $0`.pid
 
-echo `date`
+echo "---------------------------" > $LOGFILE
+echo "run by $USER " >> $LOGFILE
+echo `date` >> $LOGFILE
 
 # check pid file does not exist (normal file test not dir or block)
 if [ -f $PID ] ; then 
-echo "pid file $PID exists! Previous script run has not completed or completed abnormally."
+echo "pid file $PID exists! Previous script run has not completed or completed abnormally." >> $LOGFILE
 exit 1
 
 # test block device exists (in case of failure or disconnection)
 elif ! mount | grep -q $DEVICE1 || ! mount | grep -q $DEVICE2 ; then
-echo "backup device not currently mounted!" && echo "$DEVICE and $ DEVICE2 tested" 
+echo "backup device not currently mounted!" && echo "$DEVICE and $ DEVICE2 tested"  >> $LOGFILE
 exit 2
 
 # create pid file and mirror
 else
-echo "creating pid file $PID. Beginning rsync mirroring.. "
-touch $PID
-rsync --archive --delete --human-readable --itemize-changes --log-file=$LOGFILE $SOURCE $DESTINATION
-# flush all disk buffers
-sync
-rm $PID
-echo `date`
+echo "creating pid file $PID. Beginning rsync mirroring.. " >> $LOGFILE
+	if (touch $PID) ; then
+	sync
+	rsync --recursive --delete --human-readable --log-file=$LOGFILE $SOURCE $DESTINATION
+	# flush all disk buffers	
+	sync
+	rm $PID
+	else
+	echo "unable to create pid file $PID. Exiting" >> $LOGFILE
+	exit 3
+	fi
+echo `date` >> $LOGFILE
 
 exit 0
 fi
-exit 3
+exit 4
 
