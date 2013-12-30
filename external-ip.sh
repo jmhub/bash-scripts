@@ -21,12 +21,17 @@ if [ -z $MYIP ] || [ ! -z $(grep "service unavailable" $IPOUT) ]; then
 echo "External IP not retrieved. exiting." >> $LOG
 exit 1 
 
-elif [ -z $(cat $IPOUT) ] && [ ! -z $MYIP ]; then
-echo "$IPOUT empty. IP $MYIP received." >> $LOG
-echo $MYIP > $IPOUT
-	if [ "$MYIP" == $(cat $IPOUT) ]; then
-	echo "$IPIP and $IPOUT identical" >> $LOG
-	else
+elif [ ! -z $MYIP ]; then
+echo "IP $MYIP received." >> $LOG
+# echo $MYIP > $IPOUT
+	# uses single = sign for comparing strings - if $IPOUT is empty this may cause an error
+	if [ $MYIP = $(cat $IPOUT) ]; then
+		echo "$MYIP and $IPOUT identical" >> $LOG
+		exit 2
+	fi
+else
+	echo $MYIP > $IPOUT
+
 	echo "$MYIP" > $IPOUT
 	echo "<html>" > $OUT
 	echo "<body>" >> $OUT
@@ -38,6 +43,5 @@ echo $MYIP > $IPOUT
 lftp -e "set ssl:verify-certificate no; put $OUT; bye" -u 1574758_amusebouche,1nosebag1 www.amusebouche.co.nf
 exit 0
 fi
-else
+
 exit 3
-fi
