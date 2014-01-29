@@ -11,7 +11,7 @@ log=$backupDest/logs/$USER-rsync.log
 #fi
 #cp -a $HOME $backupDir 2>/dev/null
 
-rsync ---prune-empty-dirs --archive --acls --human-readable --log-file=$log --exclude-from '/opt/scripts/excluded-from-rsync/excluded-backup-home.txt' $backupSource $backupDest
+rsync --compress --prune-empty-dirs --archive --acls --human-readable --log-file=$log --exclude-from '/opt/scripts/excluded-from-rsync/excluded-backup-home.txt' $backupSource $backupDest
 
 
 
