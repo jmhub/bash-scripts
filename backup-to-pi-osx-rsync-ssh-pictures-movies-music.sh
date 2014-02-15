@@ -31,18 +31,20 @@ MOUNTPOINT=/Volumes/pi-backup
 
 # Multiple sources
 
+SOURCE=/Users/james/Documents
 SOURCE_MOVIES=/Users/james/Movies
 SOURCE_MUSIC=/Users/james/Music
 SOURCE_PICTURES=/Users/james/Pictures
-DESTINATION=$REMOTEMOUNT/backup/$THISHOST
+DESTINATION=$REMOTEMOUNT/backup/$THISHOST/Pictures
 LOGFILE=$SOURCE/`basename $0`.log
 PID=/tmp/`basename $0`.pid
 EXCLUDE=$SOURCE/documents-rsync-exclude.txt
 CONNECTSTRING=""
 
 # echo $PID
-echo "####" >> $LOGFILE
+echo "####" > $LOGFILE
 echo "Backup script run by $USER " `date` >> $LOGFILE
+echo "Backing up $SOURCE_PICTURES to $DESTINATION" >> $LOGFILE
 
 # check pid file does not exist (normal file test not dir or block)
 if [ -f $PID ] ; then 
@@ -51,7 +53,7 @@ exit 1
 fi
 
 # check $SOURCES
-if [ ! -d $SOURCE_MOVIESSSSS ] -o [ ! -d $SOURCE_MUSIC ] -o [ ! -d $SOURCE_PICTURES ]; then
+if [ ! -d $SOURCE_MOVIES ] || [ ! -d $SOURCE_MUSIC ] || [ ! -d $SOURCE_PICTURES ]; then
 	echo "Source(s) don't exist" >> $LOGFILE
 	exit 4
 fi
@@ -71,7 +73,7 @@ sync
 echo "Beginning rsync..." >> $LOGFILE
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
 # could also compare with -- checksum or --size-only. Use --archive if you want permissions and links. --whole-file = no delta. stops network traffick
-rsync --whole-file --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --exclude-from $EXCLUDE --log-file=$LOGFILE --rsh="ssh -p 22231 -l james" $SOURCE_MOVIES $SOURCE_MUSIC $SOURCE_PICTURES $DESTINATION
+rsync --dry-run --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=2 --log-file=$LOGFILE --rsh="ssh -p 22231 -l james" $SOURCE_PICTURES $DESTINATION
 
 # flush all disk buffers
 sync

@@ -36,7 +36,7 @@ EXCLUDE=$SOURCE/documents-rsync-exclude.txt
 CONNECTSTRING=""
 
 # echo $PID
-echo "####" >> $LOGFILE
+echo "####" > $LOGFILE
 echo "Backup script run by $USER " `date` >> $LOGFILE
 
 # check pid file does not exist (normal file test not dir or block)
