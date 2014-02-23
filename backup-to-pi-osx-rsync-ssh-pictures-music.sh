@@ -35,7 +35,8 @@ SOURCE=/Users/james/Documents
 SOURCE_MOVIES=/Users/james/Movies
 SOURCE_MUSIC=/Users/james/Music
 SOURCE_PICTURES=/Users/james/Pictures
-DESTINATION=$REMOTEMOUNT/backup/$THISHOST/Pictures
+#SOURCE_PICTURES2="/Users/james/Pictures/iPhoto Library"
+DESTINATION=$REMOTEMOUNT/backup/$THISHOST
 LOGFILE=$SOURCE/`basename $0`.log
 PID=/tmp/`basename $0`.pid
 EXCLUDE=$SOURCE/documents-rsync-exclude.txt
@@ -73,7 +74,7 @@ sync
 echo "Beginning rsync..." >> $LOGFILE
 # --modify-window=1 option allows for a variance of ±1s on the timestamps, which makes the file comparison far more reliable.
 # could also compare with -- checksum or --size-only. Use --archive if you want permissions and links. --whole-file = no delta. stops network traffick
-rsync --dry-run --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=2 --log-file=$LOGFILE --rsh="ssh -p 22231 -l james" $SOURCE_PICTURES $DESTINATION
+rsync --archive --no-perms --no-group --human-readable --itemize-changes --modify-window=1 --log-file=$LOGFILE --rsh="ssh -p 22231 -l james" $SOURCE_PICTURES $SOURCE_MUSIC $DESTINATION
 
 # flush all disk buffers
 sync
